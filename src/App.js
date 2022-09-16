@@ -1,23 +1,32 @@
-import logo from './logo.svg';
 import './App.css';
+import { useEffect, useState } from 'react';
+import CurrentResult from './components/CurrentResult';
+import NewResultForm from "./components/NewResultForm";
+import { initWeb3, getCurrentTotalResult } from './WebClient';
 
 function App() {
+  const [initDone, setInitDone] = useState(false);
+  const [totalResult, setTotalResult] = useState();
+
+  useEffect(() => {
+    const init = async () => {
+      initWeb3().then(_ => {
+        setInitDone(true);
+        getCurrentTotalResult().then(result => {
+          setTotalResult(result);
+        })
+      });
+    }
+    init();
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Paracétamol test result</h1>
+      <h2>Pourcentage de réussite actuel : <CurrentResult total={totalResult} /></h2>
+      
+
+      <NewResultForm />
     </div>
   );
 }
